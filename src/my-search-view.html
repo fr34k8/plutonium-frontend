@@ -1,0 +1,143 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-search/paper-search.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-search-view">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+
+                padding: 10px;
+            }
+        </style>
+
+        <div class="card">
+            <div class="circle">1</div>
+            <h1>Notifying the user</h1>
+            <paper-search-panel
+                    search="{{search}}"
+                    count="{{count}}"
+                    items="[[items]]"
+                    has-more="[[hasMore]]"
+                    loading="[[loading]]"
+                    filters="[[filters]]"
+                    selected-filters="{{selectedFilters}}"
+                    on-change-request-params="loadData">
+                <div>
+                    Show your [[count]] results for "[[search]]"
+                </div>
+            </paper-search-panel>
+        </div>
+    </template>
+
+    <script>
+        class MySearchView extends Polymer.Element {
+            static get is() {
+                return 'my-search-view';
+            }
+
+            openToastInfo(event) {
+                this._generateNotification('info');
+            }
+
+
+            openToastLink(event) {
+                this._generateNavigationNotification('info', 'http://www.google.com');
+            }
+
+
+            openToastInfoAs(event) {
+                this._generateIconNotification('info', 'my-icons:account-circle');
+            }
+
+
+            openToastWarning(event) {
+                this._generateNotification('warning');
+            }
+
+            openToastError(event) {
+                this._generateNotification('error');
+            }
+
+            openToastSuccess(event) {
+                this._generateNotification('success');
+            }
+
+            openToastDebug(event) {
+                this._generateNotification('debug');
+            }
+
+            _generateNavigationNotification(level, lnk) {
+                var notification = {
+                    message: 'Hi s, this is a ' + level + ' notification!',
+                    level: level,
+                    lnk: lnk,
+                    icon: null
+                };
+                console.debug(this.id, 'fire notify event', notification);
+                this.dispatchEvent(new CustomEvent('notify', {
+                    detail: notification,
+                    bubbles: true,
+                    composed: true
+                }));
+//                var notification = {
+//                    message: 'Created new link!',
+//                    level: level,
+//                    icon: null,
+//                    link: link
+//                };
+//                console.debug(this.id, 'fire notify event', notification);
+//                this.dispatchEvent(new CustomEvent('notify', {
+//                    detail: notification,
+//                    bubbles: true,
+//                    composed: true
+//                }));
+            }
+
+
+            _generateIconNotification(level, icon) {
+                var notification = {
+                    message: 'This is a ' + level + ' ICON notification!',
+                    level: level,
+                    link: null,
+                    icon: icon
+                };
+                console.debug(this.id, 'fire notify event', notification);
+                this.dispatchEvent(new CustomEvent('notify', {
+                    detail: notification,
+                    bubbles: true,
+                    composed: true
+                }));
+            }
+
+            _generateNotification(level) {
+                var notification = {
+                    message: 'Hi everyone, this is a ' + level + ' notification!',
+                    level: level,
+                    link: null,
+                    icon: null
+                };
+                console.debug(this.id, 'fire notify event', notification);
+                this.dispatchEvent(new CustomEvent('notify', {
+                    detail: notification,
+                    bubbles: true,
+                    composed: true
+                }));
+            }
+        }
+
+        window.customElements.define(MySearchView.is, MySearchView);
+    </script>
+</dom-module>

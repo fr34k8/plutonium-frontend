@@ -19,7 +19,8 @@
     "paper-button": "PolymerElements/paper-button#^2.0.0",
     "paper-badge": "PolymerElements/paper-badge#^2.0.0",
     "paper-card": "PolymerElements/paper-card#^2.0.0",
-    "paper-item": "PolymerElements/paper-item#^2.0.0"
+    "paper-item": "PolymerElements/paper-item#^2.0.0",
+    "paper-search": "Collaborne/paper-search#^2.0.6"
   },
   "resolutions": {
     "polymer": "^2.0.0-rc.3"

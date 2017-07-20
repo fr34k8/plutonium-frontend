@@ -27,6 +27,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/paper-badge/paper-badge.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-search/paper-search.html">
 <link rel="import" href="my-icons.html">
 
 <link rel="lazy-import" href="my-view1.html">
@@ -90,6 +91,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 /*--paper-toast-color: black;*/
             }
 
+            paper-search-bar {
+                color: black;
+            }
+
             .warning {
                 color: yellow;
             }
@@ -124,6 +129,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <app-toolbar>Menu</app-toolbar>
                 <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
                     <a name="boilerplate-view" href="boilerplate-view">Boilerplate</a>
+                    <a name="search-view" href="search-view">Search</a>
                     <a name="view1" href="view1">View One</a>
                     <a name="view2" href="view2">View Two</a>
                     <a name="view3" href="view3">View Three</a>
@@ -133,10 +139,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <!-- Main content -->
             <app-header-layout has-scrolling-region>
 
-                <app-header slot="header" condenses reveals effects="waterfall">
-                    <app-toolbar>
+                <app-header slot="header" fixed shadow>
+                    <app-toolbar class="layout horizontal">
                         <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
                         <div main-title>My App</div>
+                        <!--<div>-->
+                        <template is="dom-if" if="[[!showContextSearch]]">
+                            <paper-icon-button id="searchToggle" icon="my-icons:search"
+                                               on-tap="openContextSearch"></paper-icon-button>
+                        </template>
                         <div style="display:inline-block">
                             <template is="dom-if" if="[[_hasNotifications]]">
                                 <paper-icon-button id="notifications-box" icon="my-icons:notifications"
@@ -148,6 +159,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             </template>
                         </div>
                     </app-toolbar>
+                    <template is="dom-if" if="[[showContextSearch]]">
+                        <app-toolbar>
+                            <paper-search-bar
+                                    class="flex"
+                                    query="{{searchQuery}}"
+                                    placeholder="Enter search term"
+                                    nr-selected-filters="3"
+                                    on-paper-search-search="search"
+                                    on-paper-search-filter="filter">
+                            </paper-search-bar>
+                            <paper-icon-button icon="my-icons:close"
+                                               on-tap="closeContextSearch"></paper-icon-button>
+                        </app-toolbar>
+                    </template>
                 </app-header>
 
                 <iron-pages
@@ -155,6 +180,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         attr-for-selected="name"
                         fallback-selection="view404"
                         role="main">
+
+                    <my-search-view name="search-view"></my-search-view>
                     <my-view1 name="view1"></my-view1>
                     <my-view2 name="view2"></my-view2>
                     <my-view3 name="view3"></my-view3>
@@ -173,7 +200,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </div>
             <template is="dom-repeat" items="[[notifications]]" as="notification">
                 <paper-icon-item class="layout horizontal notification-item">
-                    <iron-icon icon="[[_computeNotificationIcon(notification)]]" slot="item-icon" class$="[[notification.level]]"></iron-icon>
+                    <iron-icon icon="[[_computeNotificationIcon(notification)]]" slot="item-icon"
+                               class$="[[notification.level]]"></iron-icon>
                     <div class$="flex [[notification.level]]">[[notification.message]]</div>
                     <a href="[[notification.lnk]]" tabindex="-1" hidden="[[!notification.lnk]]">
                         <paper-button raised>Show</paper-button>
@@ -204,8 +232,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     routeData: Object,
                     subroute: String,
 
+                    searchQuery: {
+                        type: String,
+                        notify: true
+                    },
+                    showContextSearch: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+
                     notifications: {
                         type: Array,
+                        notify: true,
                         value: []
                     },
                     _hasNotifications: {
@@ -269,6 +308,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
                 console.debug('computed icon >', icn);
                 return icn;
+            }
+
+            search(query) {
+
+            }
+
+            filter(query) {
+
+            }
+
+            openContextSearch(event) {
+                this.set('showContextSearch', true);
+            }
+
+            closeContextSearch(event) {
+                this.set('showContextSearch', false);
             }
 
             _routePageChanged(page) {
