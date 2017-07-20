@@ -91,23 +91,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
 
             .warning {
-                background-color: yellow;
-                color: black;
+                color: yellow;
             }
 
             .error {
-                background-color: red;
-                color: black;
+                color: red;
+            }
+
+            .fail {
+                color: red;
             }
 
             .success {
-                background-color: green;
-                color: black;
+                color: green;
             }
 
             .debug {
-                background-color: blue;
-                color: black;
+                color: blue;
             }
         </style>
 
@@ -165,37 +165,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
         </app-drawer-layout>
-        
+
         <paper-toast id="toast" duration="0">
             <div class="layout horizontal">
                 <h2 class="flex">Notifications</h2>
                 <paper-icon-button icon="my-icons:close" on-tap="_handleNotificationAllRemoved"></paper-icon-button>
             </div>
             <template is="dom-repeat" items="[[notifications]]" as="notification">
-                <template is="dom-if" if="[[notification.icon]]">
-                    <paper-icon-item class$="[[notification.level]] layout horizontal notification-item">
-                        <iron-icon icon="[[notification.icon]]" slot="item-icon"></iron-icon>
-                        <div class="flex">[[notification.message]]</div>
-                        <a href="[[notification.lnk]]" tabindex="-1" hidden="[[!notification.lnk]]">
-                            <paper-button raised class="[[notification.level]]">Show</paper-button>
-                        </a>
-                        <paper-icon-button index="[[index]]" icon="my-icons:close"
-                                           on-tap="_handleNotificationRemoved"></paper-icon-button>
-
-                    </paper-icon-item>
-                </template>
-                <template is="dom-if" if="[[!notification.icon]]">
-                    <paper-item class$="[[notification.level]] layout horizontal notification-item">
-                        <div class="flex">[[notification.message]]</div>
-                        <a href="[[notification.lnk]]" tabindex="-1" hidden="[[!notification.lnk]]">
-                            <paper-button raised class="[[notification.level]]">Show</paper-button>
-                        </a>
-                        <paper-icon-button index="[[index]]" icon="my-icons:close"
-                                           on-tap="_handleNotificationRemoved"></paper-icon-button>
-                    </paper-item>
-                </template>
-
-
+                <paper-icon-item class="layout horizontal notification-item">
+                    <iron-icon icon="[[_computeNotificationIcon(notification)]]" slot="item-icon" class$="[[notification.level]]"></iron-icon>
+                    <div class$="flex [[notification.level]]">[[notification.message]]</div>
+                    <a href="[[notification.lnk]]" tabindex="-1" hidden="[[!notification.lnk]]">
+                        <paper-button raised>Show</paper-button>
+                    </a>
+                    <paper-icon-button index="[[index]]" icon="my-icons:close"
+                                       on-tap="_handleNotificationRemoved"></paper-icon-button>
+                </paper-icon-item>
             </template>
         </paper-toast>
 
@@ -271,6 +256,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             _computeHasNotifications(notifications) {
                 return notifications > 0;
+            }
+
+            _computeNotificationIcon(notification) {
+                var icn = "";
+                if (notification !== undefined && notification !== null) {
+                    if (notification.icon) {
+                        icn = notification.icon;
+                    } else {
+                        icn = 'my-icons:' + notification.level;
+                    }
+                }
+                console.debug('computed icon >', icn);
+                return icn;
             }
 
             _routePageChanged(page) {
