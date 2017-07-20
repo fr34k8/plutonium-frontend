@@ -27,6 +27,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/paper-badge/paper-badge.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-search/paper-search.html">
 <link rel="import" href="my-icons.html">
 
 <link rel="lazy-import" href="my-view1.html">
@@ -90,24 +91,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 /*--paper-toast-color: black;*/
             }
 
-            .warning {
-                background-color: yellow;
+            paper-search-bar {
                 color: black;
+            }
+
+            .warning {
+                color: yellow;
             }
 
             .error {
-                background-color: red;
-                color: black;
+                color: red;
+            }
+
+            .fail {
+                color: red;
             }
 
             .success {
-                background-color: green;
-                color: black;
+                color: green;
             }
 
             .debug {
-                background-color: blue;
-                color: black;
+                color: blue;
             }
         </style>
 
@@ -124,6 +129,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <app-toolbar>Menu</app-toolbar>
                 <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
                     <a name="boilerplate-view" href="boilerplate-view">Boilerplate</a>
+                    <a name="search-view" href="search-view">Search</a>
                     <a name="view1" href="view1">View One</a>
                     <a name="view2" href="view2">View Two</a>
                     <a name="view3" href="view3">View Three</a>
@@ -133,10 +139,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <!-- Main content -->
             <app-header-layout has-scrolling-region>
 
-                <app-header slot="header" condenses reveals effects="waterfall">
-                    <app-toolbar>
+                <app-header slot="header" fixed shadow>
+                    <app-toolbar class="layout horizontal">
                         <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
                         <div main-title>My App</div>
+                        <!--<div>-->
+                        <template is="dom-if" if="[[!showContextSearch]]">
+                            <paper-icon-button id="searchToggle" icon="my-icons:search"
+                                               on-tap="openContextSearch"></paper-icon-button>
+                        </template>
                         <div style="display:inline-block">
                             <template is="dom-if" if="[[_hasNotifications]]">
                                 <paper-icon-button id="notifications-box" icon="my-icons:notifications"
@@ -148,6 +159,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             </template>
                         </div>
                     </app-toolbar>
+                    <template is="dom-if" if="[[showContextSearch]]">
+                        <app-toolbar>
+                            <paper-search-bar
+                                    class="flex"
+                                    query="{{searchQuery}}"
+                                    placeholder="Enter search term"
+                                    nr-selected-filters="3"
+                                    on-paper-search-search="search"
+                                    on-paper-search-filter="filter">
+                            </paper-search-bar>
+                            <paper-icon-button icon="my-icons:close"
+                                               on-tap="closeContextSearch"></paper-icon-button>
+                        </app-toolbar>
+                    </template>
                 </app-header>
 
                 <iron-pages
@@ -155,6 +180,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         attr-for-selected="name"
                         fallback-selection="view404"
                         role="main">
+
+                    <my-search-view name="search-view"></my-search-view>
                     <my-view1 name="view1"></my-view1>
                     <my-view2 name="view2"></my-view2>
                     <my-view3 name="view3"></my-view3>
@@ -165,37 +192,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
         </app-drawer-layout>
-        
+
         <paper-toast id="toast" duration="0">
             <div class="layout horizontal">
                 <h2 class="flex">Notifications</h2>
                 <paper-icon-button icon="my-icons:close" on-tap="_handleNotificationAllRemoved"></paper-icon-button>
             </div>
             <template is="dom-repeat" items="[[notifications]]" as="notification">
-                <template is="dom-if" if="[[notification.icon]]">
-                    <paper-icon-item class$="[[notification.level]] layout horizontal notification-item">
-                        <iron-icon icon="[[notification.icon]]" slot="item-icon"></iron-icon>
-                        <div class="flex">[[notification.message]]</div>
-                        <a href="[[notification.lnk]]" tabindex="-1" hidden="[[!notification.lnk]]">
-                            <paper-button raised class="[[notification.level]]">Show</paper-button>
-                        </a>
-                        <paper-icon-button index="[[index]]" icon="my-icons:close"
-                                           on-tap="_handleNotificationRemoved"></paper-icon-button>
-
-                    </paper-icon-item>
-                </template>
-                <template is="dom-if" if="[[!notification.icon]]">
-                    <paper-item class$="[[notification.level]] layout horizontal notification-item">
-                        <div class="flex">[[notification.message]]</div>
-                        <a href="[[notification.lnk]]" tabindex="-1" hidden="[[!notification.lnk]]">
-                            <paper-button raised class="[[notification.level]]">Show</paper-button>
-                        </a>
-                        <paper-icon-button index="[[index]]" icon="my-icons:close"
-                                           on-tap="_handleNotificationRemoved"></paper-icon-button>
-                    </paper-item>
-                </template>
-
-
+                <paper-icon-item class="layout horizontal notification-item">
+                    <iron-icon icon="[[_computeNotificationIcon(notification)]]" slot="item-icon"
+                               class$="[[notification.level]]"></iron-icon>
+                    <div class$="flex [[notification.level]]">[[notification.message]]</div>
+                    <a href="[[notification.lnk]]" tabindex="-1" hidden="[[!notification.lnk]]">
+                        <paper-button raised>Show</paper-button>
+                    </a>
+                    <paper-icon-button index="[[index]]" icon="my-icons:close"
+                                       on-tap="_handleNotificationRemoved"></paper-icon-button>
+                </paper-icon-item>
             </template>
         </paper-toast>
 
@@ -219,8 +232,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     routeData: Object,
                     subroute: String,
 
+                    searchQuery: {
+                        type: String,
+                        notify: true
+                    },
+                    showContextSearch: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+
                     notifications: {
                         type: Array,
+                        notify: true,
                         value: []
                     },
                     _hasNotifications: {
@@ -271,6 +295,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             _computeHasNotifications(notifications) {
                 return notifications > 0;
+            }
+
+            _computeNotificationIcon(notification) {
+                var icn = "";
+                if (notification !== undefined && notification !== null) {
+                    if (notification.icon) {
+                        icn = notification.icon;
+                    } else {
+                        icn = 'my-icons:' + notification.level;
+                    }
+                }
+                console.debug('computed icon >', icn);
+                return icn;
+            }
+
+            search(query) {
+
+            }
+
+            filter(query) {
+
+            }
+
+            openContextSearch(event) {
+                this.set('showContextSearch', true);
+            }
+
+            closeContextSearch(event) {
+                this.set('showContextSearch', false);
             }
 
             _routePageChanged(page) {
