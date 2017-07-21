@@ -36,349 +36,351 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="lazy-import" href="my-view404.html">
 
 <dom-module id="my-app">
-  <template>
-    <style include="iron-flex">
-      :host {
-        --app-primary-color: #4285f4;
-        --app-secondary-color: black;
+    <template>
+        <style include="iron-flex">
+            :host {
+                --app-primary-color: #4285f4;
+                --app-secondary-color: black;
 
-        display: block;
-      }
+                display: block;
+            }
 
-      app-drawer-layout:not([narrow]) [drawer-toggle] {
-        display: none;
-      }
+            app-drawer-layout:not([narrow]) [drawer-toggle] {
+                display: none;
+            }
 
-      app-header {
-        color: #fff;
-        background-color: var(--app-primary-color);
-      }
+            app-header {
+                color: #fff;
+                background-color: var(--app-primary-color);
+            }
 
-      app-header paper-icon-button {
-        --paper-icon-button-ink-color: white;
-      }
+            app-header paper-icon-button {
+                --paper-icon-button-ink-color: white;
+            }
 
-      .drawer-list {
-        margin: 0 20px;
-      }
+            .drawer-list {
+                margin: 0 20px;
+            }
 
-      .drawer-list a {
-        display: block;
-        padding: 0 16px;
-        text-decoration: none;
-        color: var(--app-secondary-color);
-        line-height: 40px;
-      }
+            .drawer-list a {
+                display: block;
+                padding: 0 16px;
+                text-decoration: none;
+                color: var(--app-secondary-color);
+                line-height: 40px;
+            }
 
-      .drawer-list a.iron-selected {
-        color: black;
-        font-weight: bold;
-      }
+            .drawer-list a.iron-selected {
+                color: black;
+                font-weight: bold;
+            }
 
-      .notification-item {
+            .notification-item {
 
-      }
+            }
 
-      a paper-button,
-      a:active paper-button,
-      a:visited paper-button {
-        color: white;
-        background: transparent;
-      }
+            a paper-button,
+            a:active paper-button,
+            a:visited paper-button {
+                color: white;
+                background: transparent;
+            }
 
-      a {
-        text-decoration: none;
-      }
+            a {
+                text-decoration: none;
+            }
 
-      .info {
-        /*--paper-toast-background-color: tran;*/
-        /*--paper-toast-color: black;*/
-      }
+            .info {
+                /*--paper-toast-background-color: tran;*/
+                /*--paper-toast-color: black;*/
+            }
 
-      paper-search-bar {
-        color: black;
-      }
+            paper-search-bar {
+                color: black;
+            }
 
-      .notification-action {
-        background-color: white;
-        color: black;
-      }
+            .notification-action {
+                background-color: white;
+                color: black;
+            }
 
-      .warning {
-        color: yellow;
-      }
+            .warning {
+                color: yellow;
+            }
 
-      .error {
-        color: red;
-      }
+            .error {
+                color: red;
+            }
 
-      .fail {
-        color: red;
-      }
+            .fail {
+                color: red;
+            }
 
-      .success {
-        color: green;
-      }
+            .success {
+                color: green;
+            }
 
-      .debug {
-        color: blue;
-      }
-    </style>
+            .debug {
+                color: blue;
+            }
+        </style>
 
-    <app-location route="{{route}}" use-hash-as-path></app-location>
-    <app-route
-            route="{{route}}"
-            pattern="[[rootPattern]]:page"
-            data="{{routeData}}"
-            tail="{{subroute}}"></app-route>
+        <app-location route="{{route}}" use-hash-as-path></app-location>
+        <app-route
+                route="{{route}}"
+                pattern="[[rootPattern]]:page"
+                data="{{routeData}}"
+                tail="{{subroute}}"></app-route>
 
-    <app-header-layout fullbleed>
+        <app-header-layout fullbleed>
 
-      <app-header slot="header" fixed shadow>
-        <app-toolbar class="layout horizontal">
-          <paper-icon-button icon="my-icons:menu" on-tap="toggleDrawer"></paper-icon-button>
-          <div main-title>My App</div>
-          <!--<div>-->
-          <template is="dom-if" if="[[!showContextSearch]]">
-            <paper-icon-button id="searchToggle" icon="my-icons:search"
-                               on-tap="openContextSearch"></paper-icon-button>
-          </template>
-          <div style="display:inline-block">
-            <template is="dom-if" if="[[_hasNotifications]]">
-              <paper-icon-button id="notifications-box" icon="my-icons:notifications"
-                                 alt="notifications-box"></paper-icon-button>
-              <paper-badge for="notifications-box" label="[[notifications.length]]"></paper-badge>
+            <app-header slot="header" fixed shadow>
+                <app-toolbar class="layout horizontal">
+                    <paper-icon-button icon="my-icons:menu" on-tap="toggleDrawer"></paper-icon-button>
+                    <div main-title>My App</div>
+                    <!--<div>-->
+                    <template is="dom-if" if="[[!showContextSearch]]">
+                        <paper-icon-button id="searchToggle" icon="my-icons:search"
+                                           on-tap="openContextSearch"></paper-icon-button>
+                    </template>
+                    <div style="display:inline-block">
+                        <template is="dom-if" if="[[_hasNotifications]]">
+                            <paper-icon-button id="notifications-box" icon="my-icons:notifications"
+                                               alt="notifications-box"></paper-icon-button>
+                            <paper-badge for="notifications-box" label="[[notifications.length]]"></paper-badge>
+                        </template>
+                        <template is="dom-if" if="[[!_hasNotifications]]">
+                            <iron-icon icon="my-icons:notifications-none"></iron-icon>
+                        </template>
+                    </div>
+                </app-toolbar>
+                <template is="dom-if" if="[[showContextSearch]]">
+                    <app-toolbar>
+                        <paper-search-bar
+                                class="flex"
+                                query="{{searchQuery}}"
+                                placeholder="Enter search term"
+                                nr-selected-filters="3"
+                                on-paper-search-search="search"
+                                on-paper-search-filter="filter">
+                        </paper-search-bar>
+                        <paper-icon-button icon="my-icons:close"
+                                           on-tap="closeContextSearch"></paper-icon-button>
+                    </app-toolbar>
+                </template>
+            </app-header>
+
+
+            <app-drawer-layout>
+                <!-- Drawer content -->
+                <app-drawer id="drawer" slot="drawer">
+                    <app-toolbar>Menu</app-toolbar>
+                    <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+                        <a name="boilerplate-view" href="#/boilerplate-view">Boilerplate</a>
+                        <a name="search-view" href="#/search-view">Search</a>
+                        <a name="view1" href="#/view1">View One</a>
+                        <a name="view2" href="#/view2">View Two</a>
+                        <a name="view3" href="#/view3">View Three</a>
+                    </iron-selector>
+                </app-drawer>
+
+                <!-- Main content -->
+
+                <iron-pages
+                        selected="[[page]]"
+                        attr-for-selected="name"
+                        fallback-selection="view404"
+                        role="main">
+
+                    <my-search-view name="search-view"></my-search-view>
+                    <my-view1 name="view1"></my-view1>
+                    <my-view2 name="view2"></my-view2>
+                    <my-view3 name="view3"></my-view3>
+                    <my-boilerplate-view name="boilerplate-view"></my-boilerplate-view>
+                    <my-view404 name="view404"></my-view404>
+                </iron-pages>
+
+
+            </app-drawer-layout>
+
+        </app-header-layout>
+
+        <paper-toast id="toast" duration="0">
+            <div class="layout horizontal">
+                <h2 class="flex">Notifications</h2>
+                <paper-icon-button icon="my-icons:close" on-tap="_handleNotificationAllRemoved"></paper-icon-button>
+            </div>
+            <template is="dom-repeat" items="[[notifications]]" as="notification">
+                <paper-icon-item class="layout horizontal notification-item">
+                    <iron-icon icon="[[_computeNotificationIcon(notification)]]" slot="item-icon"
+                               class$="[[notification.level]]"></iron-icon>
+                    <div class$="flex [[notification.level]]">[[notification.message]]</div>
+                    <template is="dom-if" if="[[notification.lnk]]">
+                        <a href="[[notification.lnk]]" tabindex="-1">
+                            <paper-button raised class="notification-action">Show</paper-button>
+                        </a>
+                    </template>
+                    <paper-icon-button index="[[index]]" icon="my-icons:close"
+                                       on-tap="_handleNotificationRemoved"></paper-icon-button>
+                </paper-icon-item>
             </template>
-            <template is="dom-if" if="[[!_hasNotifications]]">
-              <iron-icon icon="my-icons:notifications-none"></iron-icon>
-            </template>
-          </div>
-        </app-toolbar>
-        <template is="dom-if" if="[[showContextSearch]]">
-          <app-toolbar>
-            <paper-search-bar
-                    class="flex"
-                    query="{{searchQuery}}"
-                    placeholder="Enter search term"
-                    nr-selected-filters="3"
-                    on-paper-search-search="search"
-                    on-paper-search-filter="filter">
-            </paper-search-bar>
-            <paper-icon-button icon="my-icons:close"
-                               on-tap="closeContextSearch"></paper-icon-button>
-          </app-toolbar>
-        </template>
-      </app-header>
+        </paper-toast>
+
+    </template>
+
+    <script>
+        /**
+         * @polymer
+         * @extends HTMLElement
+         */
+        class MyApp extends Polymer.Element {
+
+            static get is() {
+                return 'my-app';
+            }
+
+            static get properties() {
+                return {
+                    page: {
+                        type: String,
+                        reflectToAttribute: true,
+                        observer: '_pageChanged',
+                    },
+                    rootPattern: String,
+                    routeData: Object,
+                    subroute: String,
+
+                    searchQuery: {
+                        type: String,
+                        notify: true
+                    },
+                    showContextSearch: {
+                        type: Boolean,
+                        value: false,
+                        notify: true
+                    },
+
+                    notifications: {
+                        type: Array,
+                        notify: true,
+                        value: []
+                    },
+                    _hasNotifications: {
+                        type: Boolean,
+                        computed: '_computeHasNotifications(notifications.length)'
+                    }
+                };
+            }
+
+            static get observers() {
+                return [
+                    '_routePageChanged(routeData.page)',
+                ];
+            }
+
+            constructor() {
+                super();
+
+                // Get root pattern for app-route, for more info about `rootPath` see:
+                // https://www.polymer-project.org/2.0/docs/upgrade#urls-in-templates
+                this.rootPattern = (new URL(this.rootPath)).pathname;
+            }
+
+            ready() {
+                super.ready();
+                this.addEventListener('notify', e => {
+                    this._handleNotificationAdded(e)
+                });
+            }
+
+            toggleDrawer() {
+                this.$.drawer.toggle();
+            }
+
+            _handleNotificationAdded(e) {
+                console.debug(e.target.id, 'notify', e.detail);
+                this.push('notifications', e.detail);
+                this.$.toast.open();
+            }
+
+            _handleNotificationRemoved(e) {
+                this.splice('notifications', e.target.index, 1);
+                if (this.notifications.length == 0) {
+                    this.$.toast.close();
+                }
+            }
+
+            _handleNotificationAllRemoved(e) {
+                this.splice('notifications', e.target.index, this.notifications.length);
+                this.$.toast.close();
+            }
+
+            _computeHasNotifications(notifications) {
+                return notifications > 0;
+            }
+
+            _computeNotificationIcon(notification) {
+                var icn = "";
+                if (notification !== undefined && notification !== null) {
+                    if (notification.icon) {
+                        icn = notification.icon;
+                    } else {
+                        icn = 'my-icons:' + notification.level;
+                    }
+                }
+                console.debug('computed icon >', icn);
+                return icn;
+            }
+
+            search(query) {
+
+            }
+
+            filter(query) {
+
+            }
+
+            openContextSearch(event) {
+                this.set('showContextSearch', true);
+            }
+
+            closeContextSearch(event) {
+                this.set('showContextSearch', false);
+            }
+
+            _routePageChanged(page) {
+                // Polymer 2.0 will call with `undefined` on initialization.
+                // Ignore until we are properly called with a string.
+                if (page === undefined) {
+                    return;
+                }
+
+                // If no page was found in the route data, page will be an empty string.
+                // Deault to 'view1' in that case.
+                this.page = page || 'view1';
+
+                // Close a non-persistent drawer when the page & route are changed.
+                if (!this.$.drawer.persistent) {
+                    this.$.drawer.close();
+                }
+            }
 
 
-      <app-drawer-layout>
-        <!-- Drawer content -->
-        <app-drawer id="drawer" slot="drawer">
-          <app-toolbar>Menu</app-toolbar>
-          <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-            <a name="boilerplate-view" href="#/boilerplate-view">Boilerplate</a>
-            <a name="search-view" href="#/search-view">Search</a>
-            <a name="view1" href="#/view1">View One</a>
-            <a name="view2" href="#/view2">View Two</a>
-            <a name="view3" href="#/view3">View Three</a>
-          </iron-selector>
-        </app-drawer>
+            _pageChanged(page) {
+                // Load page import on demand. Show 404 page if fails
+                var resolvedPageUrl = this.resolveUrl('my-' + page + '.html');
+                Polymer.importHref(
+                    resolvedPageUrl,
+                    null,
+                    this._showPage404.bind(this),
+                    true);
+            }
 
-        <!-- Main content -->
+            _showPage404() {
+                this.page = 'view404';
+            }
+        }
 
-        <iron-pages
-                selected="[[page]]"
-                attr-for-selected="name"
-                fallback-selection="view404"
-                role="main">
-
-          <my-search-view name="search-view"></my-search-view>
-          <my-view1 name="view1"></my-view1>
-          <my-view2 name="view2"></my-view2>
-          <my-view3 name="view3"></my-view3>
-          <my-boilerplate-view name="boilerplate-view"></my-boilerplate-view>
-          <my-view404 name="view404"></my-view404>
-        </iron-pages>
-
-
-      </app-drawer-layout>
-
-    </app-header-layout>
-
-    <paper-toast id="toast" duration="0">
-      <div class="layout horizontal">
-        <h2 class="flex">Notifications</h2>
-        <paper-icon-button icon="my-icons:close" on-tap="_handleNotificationAllRemoved"></paper-icon-button>
-      </div>
-      <template is="dom-repeat" items="[[notifications]]" as="notification">
-        <paper-icon-item class="layout horizontal notification-item">
-          <iron-icon icon="[[_computeNotificationIcon(notification)]]" slot="item-icon"
-                     class$="[[notification.level]]"></iron-icon>
-          <div class$="flex [[notification.level]]">[[notification.message]]</div>
-          <a href="[[notification.lnk]]" tabindex="-1" hidden="[[!notification.lnk]]">
-            <paper-button raised class="notification-action">Show</paper-button>
-          </a>
-          <paper-icon-button index="[[index]]" icon="my-icons:close"
-                             on-tap="_handleNotificationRemoved"></paper-icon-button>
-        </paper-icon-item>
-      </template>
-    </paper-toast>
-
-  </template>
-
-  <script>
-      /**
-       * @polymer
-       * @extends HTMLElement
-       */
-      class MyApp extends Polymer.Element {
-
-          static get is() {
-              return 'my-app';
-          }
-
-          static get properties() {
-              return {
-                  page: {
-                      type: String,
-                      reflectToAttribute: true,
-                      observer: '_pageChanged',
-                  },
-                  rootPattern: String,
-                  routeData: Object,
-                  subroute: String,
-
-                  searchQuery: {
-                      type: String,
-                      notify: true
-                  },
-                  showContextSearch: {
-                      type: Boolean,
-                      value: false,
-                      notify: true
-                  },
-
-                  notifications: {
-                      type: Array,
-                      notify: true,
-                      value: []
-                  },
-                  _hasNotifications: {
-                      type: Boolean,
-                      computed: '_computeHasNotifications(notifications.length)'
-                  }
-              };
-          }
-
-          static get observers() {
-              return [
-                  '_routePageChanged(routeData.page)',
-              ];
-          }
-
-          constructor() {
-              super();
-
-              // Get root pattern for app-route, for more info about `rootPath` see:
-              // https://www.polymer-project.org/2.0/docs/upgrade#urls-in-templates
-              this.rootPattern = (new URL(this.rootPath)).pathname;
-          }
-
-          ready() {
-              super.ready();
-              this.addEventListener('notify', e => {
-                  this._handleNotificationAdded(e)
-          });
-          }
-
-          toggleDrawer() {
-              this.$.drawer.toggle();
-          }
-
-          _handleNotificationAdded(e) {
-              console.debug(e.target.id, 'notify', e.detail);
-              this.push('notifications', e.detail);
-              this.$.toast.open();
-          }
-
-          _handleNotificationRemoved(e) {
-              this.splice('notifications', e.target.index, 1);
-              if (this.notifications.length == 0) {
-                  this.$.toast.close();
-              }
-          }
-
-          _handleNotificationAllRemoved(e) {
-              this.splice('notifications', e.target.index, this.notifications.length);
-              this.$.toast.close();
-          }
-
-          _computeHasNotifications(notifications) {
-              return notifications > 0;
-          }
-
-          _computeNotificationIcon(notification) {
-              var icn = "";
-              if (notification !== undefined && notification !== null) {
-                  if (notification.icon) {
-                      icn = notification.icon;
-                  } else {
-                      icn = 'my-icons:' + notification.level;
-                  }
-              }
-              console.debug('computed icon >', icn);
-              return icn;
-          }
-
-          search(query) {
-
-          }
-
-          filter(query) {
-
-          }
-
-          openContextSearch(event) {
-              this.set('showContextSearch', true);
-          }
-
-          closeContextSearch(event) {
-              this.set('showContextSearch', false);
-          }
-
-          _routePageChanged(page) {
-              // Polymer 2.0 will call with `undefined` on initialization.
-              // Ignore until we are properly called with a string.
-              if (page === undefined) {
-                  return;
-              }
-
-              // If no page was found in the route data, page will be an empty string.
-              // Deault to 'view1' in that case.
-              this.page = page || 'view1';
-
-              // Close a non-persistent drawer when the page & route are changed.
-              if (!this.$.drawer.persistent) {
-                  this.$.drawer.close();
-              }
-          }
-
-
-          _pageChanged(page) {
-              // Load page import on demand. Show 404 page if fails
-              var resolvedPageUrl = this.resolveUrl('my-' + page + '.html');
-              Polymer.importHref(
-                  resolvedPageUrl,
-                  null,
-                  this._showPage404.bind(this),
-                  true);
-          }
-
-          _showPage404() {
-              this.page = 'view404';
-          }
-      }
-
-      window.customElements.define(MyApp.is, MyApp);
-  </script>
+        window.customElements.define(MyApp.is, MyApp);
+    </script>
 </dom-module>
