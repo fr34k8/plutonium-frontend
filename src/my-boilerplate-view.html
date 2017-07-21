@@ -1,0 +1,140 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-boilerplate-view">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+
+                padding: 10px;
+            }
+        </style>
+
+        <div class="card">
+            <div class="circle">1</div>
+            <h1>Notifying the user</h1>
+            <p>Alert user ...</p>
+            <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit
+                amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo
+                eripuit sit.</p>
+            <paper-button id="infoButton" on-click="openToastInfo" raised>Open Toast for info</paper-button>
+            <paper-button id="infoLinkButton" on-click="openToastLink" raised>Open Toast LINK for info</paper-button>
+            <paper-button id="infoAsButton" on-click="openToastInfoAs" raised>Open Toast AS for info</paper-button>
+            <paper-button id="warningButton" on-click="openToastWarning" raised>Open Toast for warning</paper-button>
+            <paper-button id="errorButton" on-click="openToastError" raised>Open Toast for error</paper-button>
+            <paper-button id="successButton" on-click="openToastSuccess" raised>Open Toast for success</paper-button>
+            <paper-button id="debugButton" on-click="openToastDebug" raised>Open Toast for debug</paper-button>
+        </div>
+    </template>
+
+    <script>
+        class MyBoilerplateView extends Polymer.Element {
+            static get is() {
+                return 'my-boilerplate-view';
+            }
+
+            openToastInfo(event) {
+                this._generateNotification('info');
+            }
+
+
+            openToastLink(event) {
+                this._generateNavigationNotification('info', 'http://www.google.com');
+            }
+
+
+            openToastInfoAs(event) {
+                this._generateIconNotification('info', 'my-icons:account-circle');
+            }
+
+
+            openToastWarning(event) {
+                this._generateNotification('warning');
+            }
+
+            openToastError(event) {
+                this._generateNotification('error');
+            }
+
+            openToastSuccess(event) {
+                this._generateNotification('success');
+            }
+
+            openToastDebug(event) {
+                this._generateNotification('debug');
+            }
+
+            _generateNavigationNotification(level, lnk) {
+                var notification = {
+                    message: 'Hi s, this is a ' + level + ' notification!',
+                    level: level,
+                    lnk: lnk,
+                    icon: null
+                };
+                console.debug(this.id, 'fire notify event', notification);
+                this.dispatchEvent(new CustomEvent('notify', {
+                    detail: notification,
+                    bubbles: true,
+                    composed: true
+                }));
+//                var notification = {
+//                    message: 'Created new link!',
+//                    level: level,
+//                    icon: null,
+//                    link: link
+//                };
+//                console.debug(this.id, 'fire notify event', notification);
+//                this.dispatchEvent(new CustomEvent('notify', {
+//                    detail: notification,
+//                    bubbles: true,
+//                    composed: true
+//                }));
+            }
+
+
+            _generateIconNotification(level, icon) {
+                var notification = {
+                    message: 'This is a ' + level + ' ICON notification!',
+                    level: level,
+                    link: null,
+                    icon: icon
+                };
+                console.debug(this.id, 'fire notify event', notification);
+                this.dispatchEvent(new CustomEvent('notify', {
+                    detail: notification,
+                    bubbles: true,
+                    composed: true
+                }));
+            }
+
+            _generateNotification(level) {
+                var notification = {
+                    message: 'Hi everyone, this is a ' + level + ' notification!',
+                    level: level,
+                    link: null,
+                    icon: null
+                };
+                console.debug(this.id, 'fire notify event', notification);
+                this.dispatchEvent(new CustomEvent('notify', {
+                    detail: notification,
+                    bubbles: true,
+                    composed: true
+                }));
+            }
+        }
+
+        window.customElements.define(MyBoilerplateView.is, MyBoilerplateView);
+    </script>
+</dom-module>
