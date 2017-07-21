@@ -29,6 +29,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-search/paper-search.html">
 <link rel="import" href="my-icons.html">
+<link rel="import" href="my-boilerplate-view.html">
+<link rel="import" href="my-search-view.html">
+<link rel="import" href="my-view1.html">
+<link rel="import" href="my-view2.html">
+<link rel="import" href="my-view3.html">
+<link rel="import" href="my-view404.html">
 
 <link rel="lazy-import" href="my-view1.html">
 <link rel="lazy-import" href="my-view2.html">
@@ -215,11 +221,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <iron-icon icon="[[_computeNotificationIcon(notification)]]" slot="item-icon"
                                class$="[[notification.level]]"></iron-icon>
                     <div class$="flex [[notification.level]]">[[notification.message]]</div>
-                    <a href="[[notification.lnk]]" tabindex="-1" hidden="[[!notification.lnk]]">
-                        <paper-button raised class="notification-action">Show</paper-button>
-                    </a>
-                    <paper-icon-button index="[[index]]" icon="my-icons:close"
-                                       on-tap="_handleNotificationRemoved"></paper-icon-button>
+                    <template is="dom-if" if="[[notification.lnk]]">
+                        <a href="[[notification.lnk]]" tabindex="-1">
+                            <paper-button raised class="notification-action">Show</paper-button>
+                        </a>
+                    </template>
+                    <paper-icon-button icon="my-icons:close"
+                                       on-tap="_handleNotificationRemoved">[[index]]</paper-icon-button>
                 </paper-icon-item>
             </template>
         </paper-toast>
@@ -227,6 +235,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
 
     <script>
+        /**
+         * @polymer
+         * @extends HTMLElement
+         */
         class MyApp extends Polymer.Element {
 
             static get is() {
@@ -298,7 +310,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
 
             _handleNotificationRemoved(e) {
-                this.splice('notifications', e.target.index, 1);
+                this.splice('notifications', e.target.innerHTML, 1);
                 if (this.notifications.length == 0) {
                     this.$.toast.close();
                 }

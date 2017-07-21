@@ -43,9 +43,46 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
 
     <script>
+        /**
+         * @polymer
+         * @extends HTMLElement
+         */
         class MySearchView extends Polymer.Element {
             static get is() {
                 return 'my-search-view';
+            }
+
+            static get properties() {
+                return {
+                    search: {
+                        type: String,
+                        notify: true
+                    },
+                    count: {
+                        type: Number,
+                        notify: true
+                    },
+                    items: {
+                        type: Array,
+                        notify: true
+                    },
+                    filters: {
+                        type: Array,
+                        notify: true
+                    },
+                    selectedFilters: {
+                        type: Array,
+                        notify: true
+                    },
+                    loading: {
+                        type: Boolean,
+                        notify: true
+                    },
+                    hasMore: {
+                        type: Boolean,
+                        notify: true
+                    }
+                }
             }
 
             openToastInfo(event) {
